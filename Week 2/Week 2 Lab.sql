@@ -44,18 +44,13 @@ SELECT YEAR(application_date) FROM Certificate_Application;
 SELECT MONTH(application_date) FROM Certificate_Application;
 SELECT DAY(application_date) FROM Certificate_Application;
 #Level 2
-SELECT ca.certificate_name,
-       ca.application_date,
-       ct.processing_days,
-       DATE_ADD(ca.application_date, INTERVAL ct.processing_days DAY) AS Expected_Issue_Date
-FROM Certificate_Application AS ca
-INNER JOIN Certificate_Type AS ct
-ON ca.certificate_name = ct.certificate_name;
+SELECT ct.certificate_name,ca.application_date,ct.processing_days,DATE_ADD(ca.application_date,INTERVAL ct.processing_days DAY) AS Expected_Issue_Date
+FROM Certificate_Application AS ca INNER JOIN Certificate_Type AS ct ON ca.certificate_id = ct.certificate_id;
 SELECT application_date,date_add(application_date,interval 30 DAY) from Certificate_Application;
 select application_date,date_sub(application_date,interval 7 day) from Certificate_Application;
 #Level 3
 select application_date,datediff(curdate(),application_date) from Certificate_Application;
-select * from Certificate_Application where year(application_date)=year(curdate());
+select applicatio_id,application_date from Certificate_Application where year(application_date)=year(curdate());
 
 #Conversion Functions
 #Level 1

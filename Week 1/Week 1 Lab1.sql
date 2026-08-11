@@ -58,6 +58,7 @@ INSERT INTO Temporary_Request VALUES
 (3,'Excuse me','1998-12-08');
 SELECT * FROM Temporary_Request;
 TRUNCATE TABLE Temporary_Request;
+select * from Temporary_Request;
 DROP TABLE Temporary_Request;
 INSERT INTO Citizen() VALUES (101,'Juvvanapudi Sanjana','2008-04-28','Female','8121387873','Student','Chillaboinapalli',1,'Eluru');
 INSERT INTO Panchayat_Office() VALUES(7,'Seethampeta Gram Panchayat','Seethampeta','521102','0866000002','seethampeta@gp.example','09:30:00',1,'04:00:00');
