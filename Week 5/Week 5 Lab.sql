@@ -1,0 +1,47 @@
+USE gram_panchayat_db;
+
+SHOW TABLES;
+SELECT * FROM Citizen;
+SELECT * FROM Certificate_Type;
+SELECT * FROM Panchayat_Office;
+SELECT * FROM Certificate_Application;
+
+#LEVEL 1
+SELECT COUNT(*) AS total_applications FROM Certificate_Application;
+SELECT COUNT(*) AS total_citizens FROM Citizen;
+SELECT COUNT(DISTINCT certificate_id) AS total_certificate_types FROM Certificate_Type;
+SELECT MIN(application_date) AS earliest_application_date FROM Certificate_Application;
+SELECT MAX(application_date) AS latest_application_date FROM Certificate_Application;
+
+#LEVEL 2
+SELECT application_status,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY application_status;
+SELECT certificate_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY certificate_id;
+SELECT office_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY office_id;
+SELECT village_name,COUNT(*) AS total_citizens FROM Citizen GROUP BY village_name;
+SELECT application_date,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY application_date;
+SELECT certificate_id,office_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY certificate_id, office_id;
+SELECT C.certificate_name,COUNT(*) AS total_applications FROM Certificate_Application A JOIN Certificate_Type C ON A.certificate_id=C.certificate_id GROUP BY C.certificate_name;
+SELECT P.office_name,COUNT(*) AS total_applications FROM Certificate_Application A JOIN Panchayat_Office P ON A.office_id = P.office_id GROUP BY P.office_name;
+
+#LEVEL 3
+SELECT certificate_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY certificate_id HAVING COUNT(*)>2;
+SELECT office_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY office_id HAVING COUNT(*)>2;
+SELECT certificate_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY certificate_id ORDER BY total_applications DESC;
+SELECT office_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY office_id ORDER BY total_applications ASC;
+SELECT certificate_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY certificate_id HAVING COUNT(*)>2 ORDER BY total_applications DESC;
+SELECT certificate_id,office_id,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY certificate_id, office_id ORDER BY total_applications DESC LIMIT 1;
+SELECT application_status,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY application_status ORDER BY total_applications DESC LIMIT 1;
+SELECT application_status,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY application_status ORDER BY total_applications ASC LIMIT 1;
+
+#OPTIONAL
+SELECT C.certificate_name,COUNT(*) AS total_applications FROM Certificate_Application A JOIN Certificate_Type C ON A.certificate_id=C.certificate_id GROUP BY C.certificate_name ORDER BY total_applications DESC LIMIT 1;
+SELECT P.office_name,COUNT(*) AS total_applications FROM Certificate_Application A JOIN Panchayat_Office P ON A.office_id=P.office_id GROUP BY P.office_name ORDER BY total_applications DESC LIMIT 1;
+SELECT application_status,COUNT(*) AS total_applications FROM Certificate_Application GROUP BY application_status ORDER BY total_applications DESC LIMIT 1;
+SELECT C.certificate_name,COUNT(*) AS total_applications FROM Certificate_Application A
+JOIN Certificate_Type C ON A.certificate_id=C.certificate_id GROUP BY C.certificate_name HAVING COUNT(*)>2;
+SELECT P.office_name,COUNT(*) AS total_applications FROM Certificate_Application A
+JOIN Panchayat_Office P ON A.office_id=P.office_id GROUP BY P.office_name HAVING COUNT(*)>2;
+SELECT C.certificate_name,COUNT(*) AS total_applications,MIN(A.application_date) AS earliest_application_date,MAX(A.application_date) AS latest_application_date
+FROM Certificate_Application A JOIN Certificate_Type C ON A.certificate_id=C.certificate_id GROUP BY C.certificate_name;
+SELECT P.office_name,COUNT(*) AS total_applications,COUNT(DISTINCT A.certificate_id) AS different_certificate_types
+FROM Certificate_Application A JOIN Panchayat_Office P ON A.office_id=P.office_id GROUP BY P.office_name;
