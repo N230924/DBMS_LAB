@@ -31,7 +31,7 @@ select full_name from Citizen order by full_name asc;
 select distinct village_name from Citizen;
 select distinct certificate_name from Certificate_Type;
 select distinct office_name from Panchayat_Office;
-select * from Certificate_Application where application_status='Submitted';
+select * from Certificate_Application where application_status='PENDING';
 select * from Citizen where village_name='Ramapuram';
 select * from Certificate_Application where year(application_date)=2026;
 select * from Certificate_Application order by application_date desc;
@@ -50,7 +50,7 @@ SELECT DISTINCT ca1.citizen_id FROM Certificate_Application ca1 INNER JOIN Certi
 WHERE YEAR(ca1.application_date) = 2025 AND YEAR(ca2.application_date) = 2026;
 SELECT DISTINCT ca1.citizen_id FROM Certificate_Application ca1 WHERE ca1.certificate_id=7
 AND NOT EXISTS (SELECT 1 FROM Certificate_Application ca2 WHERE ca2.citizen_id=ca1.citizen_id AND ca2.certificate_id=1);
-SELECT * FROM Certificate_Application ca1 WHERE YEAR(ca1.application_date) = 2026
+SELECT applicatio_id FROM Certificate_Application ca1 WHERE YEAR(ca1.application_date) = 2026
 AND NOT EXISTS(SELECT 1 FROM Certificate_Application ca2 WHERE ca2.citizen_id = ca1.citizen_id AND YEAR(ca2.application_date) = 2025);
 INSERT INTO Certificate_Application(citizen_id,certificate_id,application_date,applicatio_id,application_status,fee_paid) VALUES
 (9999,7,'2026-08-10',7,'submitted',30);
@@ -59,14 +59,14 @@ DELETE FROM Citizen WHERE citizen_id=1;
 #Level 2
 SELECT full_name FROM Citizen WHERE citizen_id IN(SELECT citizen_id FROM Certificate_Application);
 SELECT * FROM Citizen WHERE citizen_id IN(SELECT citizen_id FROM Certificate_Application WHERE certificate_id=7);
-SELECT * FROM Citizen WHERE citizen_id NOT IN(SELECT citizen_id FROM Certificate_Application);
+SELECT full_name FROM Citizen WHERE citizen_id NOT IN(SELECT citizen_id FROM Certificate_Application);
 SELECT * FROM Panchayat_Office WHERE office_id NOT IN(SELECT office_id FROM Certificate_Application);
-SELECT * FROM Citizen c WHERE EXISTS(SELECT 1 FROM Certificate_Application ca WHERE ca.citizen_id=c.citizen_id);
+SELECT full_name  FROM Citizen c WHERE EXISTS(SELECT 1 FROM Certificate_Application ca WHERE ca.citizen_id=c.citizen_id);
 SELECT * FROM Certificate_Type ct WHERE EXISTS(SELECT 1 FROM Certificate_Application ca WHERE ca.certificate_id=ct.certificate_id);
-SELECT * FROM Citizen c WHERE NOT EXISTS(SELECT 1 FROM Certificate_Application ca WHERE ca.citizen_id=c.citizen_id);
+SELECT full_name FROM Citizen c WHERE NOT EXISTS(SELECT 1 FROM Certificate_Application ca WHERE ca.citizen_id=c.citizen_id);
 SELECT * FROM Certificate_Type ct WHERE NOT EXISTS(SELECT 1 FROM Certificate_Application ca WHERE ca.certificate_id=ct.certificate_id);
-SELECT * FROM Citizen WHERE TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE())>ANY(SELECT TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE()) FROM Citizen WHERE village_name='Ramapuram');
-SELECT * FROM Citizen WHERE TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE())>ALL(SELECT TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE())FROM Citizen WHERE village_name='Ramapuram');
+SELECT full_name,date_of_birth FROM Citizen WHERE TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE())>ANY(SELECT TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE()) FROM Citizen WHERE village_name='Ramapuram');
+SELECT full_name,date_of_birth FROM Citizen WHERE TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE())>ALL(SELECT TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE())FROM Citizen WHERE village_name='Ramapuram');
 SELECT ca.* FROM Certificate_Application ca JOIN Certificate_Type ct ON ca.certificate_id = ct.certificate_id WHERE ct.processing_days>ALL
 (SELECT ct2.processing_days FROM Certificate_Application ca2 JOIN Certificate_Type ct2 ON ca2.certificate_id=ct2.certificate_id WHERE ca2.office_id IN(SELECT office_id FROM Panchayat_Office WHERE office_name='Nuzvid Panchayat Office'));
 
