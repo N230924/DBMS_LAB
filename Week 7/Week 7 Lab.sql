@@ -7,7 +7,11 @@ select * from Panchayat_Office;
 
 #Level 1
 create view Certificate_Applications as select * from Certificate_Application;
+select * from Certificate_Applications;
+
 create view Application_Details as select applicatio_id,citizen_id,application_status from Certificate_Application;
+select * from  Application_Details;
+
 create view Approved_Applications as select * from Certificate_Application where application_status='Approved';
 select * from Approved_Applications;
 show full tables where Table_type ='VIEW';
@@ -15,30 +19,54 @@ show full tables where Table_type ='VIEW';
 #Level 2
 create view Application_Name_Date as select C.certificate_name,CA.application_date 
 from Certificate_Type C join Certificate_Application CA on C.certificate_id=CA.certificate_id;
+select * from Application_Name_Date;
+
 create view Application_Citizen_Status as select C.full_name,CA.application_status
 from Citizen C join Certificate_Application CA on C.citizen_id=CA.citizen_id;
+select * from Application_Citizen_Status;
+
 create view Applications_Submitted as select P.office_id,P.office_name,CA.applicatio_id,CA.certificate_id 
 from Certificate_Application CA join Panchayat_Office P on P.office_id=CA.office_id;
+select * from Applications_Submitted;
+
 create view Application_Count as select certificate_id,count(*) as total_applications from Certificate_Application group by certificate_id;
+select * from Application_Count;
+
 create view Application_Count_Panchayat as select office_id,count(*) as total_applications from Certificate_Application group by office_id;
+select * from Application_Count_Panchayat;
+
 create view Pending_Applications as select C.certificate_name,CA.applicatio_id from Certificate_Application CA join Certificate_Type C
 on CA.certificate_id=C.certificate_id where CA.application_status='Pending';
+select * from Pending_Applications;
+
 select * from Application_Details where application_status='Approved';
 show create view Approved_Applications;
 
 #Level 3
 create view Applied_Applications_Count as select C.certificate_name,count(*) as total_applications 
 from Certificate_Type C join Certificate_Application CA on C.certificate_id=CA.certificate_id group by C.certificate_name;
+select * from Applied_Applications_Count;
+
 create view More_Application_1 as select P.office_name,count(*) as applications_submitted from Panchayat_Office P 
 join Certificate_Application CA on P.office_id=CA.office_id group by P.office_name,CA.office_id having count(*)>1;
+select * from More_Application_1;
+
 create view Application_Earliest_Latest as select C.certificate_name,min(CA.application_date) as earliest_application,max(CA.application_date)
 as latest_application from Certificate_Type C join Certificate_Application CA on C.certificate_id=CA.certificate_id group by C.certificate_name;
+select * from Application_Earliest_Latest;
+
 create view Application_Citizen as select C.full_name,count(*) as total_applications from Citizen C 
 join Certificate_Application CA on C.citizen_id=CA.citizen_id group by CA.citizen_id;
+select * from Application_Citizen;
+
 create view Citizen_Certificate_Application_Details as select C.full_name,CT.certificate_name,CA.applicatio_id,CA.application_date from
 Citizen C join Certificate_Application CA on C.citizen_id=CA.citizen_id join Certificate_Type CT on CA.certificate_id=CT.certificate_id;
+select * from Citizen_Certificate_Application_Details;
+
 create view Citizen_Certificate_Approved_Details as select C.full_name,CT.certificate_name,CA.application_status from Citizen C join Certificate_Application CA
 on C.citizen_id=CA.citizen_id join Certificate_Type CT on CA.certificate_id=CT.certificate_id where CA.application_status='Approved';
+select * from Citizen_Certifcate_Approved_Details;
+
 select * from Application_Citizen order by total_applications desc;
 
 create view Application as select certificate_name from Certificate_Type;
